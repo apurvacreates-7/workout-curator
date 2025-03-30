@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Curator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif; /* Softer font */
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            /* Soft pink/peach gradient background */
+            background: linear-gradient(180deg, #FFF5F8 0%, #FFEBF0 50%, #FFF0E8 100%);
+            background-attachment: fixed; /* Keep gradient fixed during scroll */
+            color: #555; /* Slightly softer default text color */
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            /* Soft white background with transparency and subtle shadow */
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px); /* Optional: adds a frosted glass effect */
+            padding: 30px;
+            border-radius: 15px; /* Slightly more rounded */
+            box-shadow: 0 6px 20px rgba(200, 150, 150, 0.15); /* Softer shadow */
+        }
+        h1, h2 {
+            text-align: center;
+            color: #E57399; /* Main pink heading color */
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700; /* Bold */
+        }
+        h2 { /* Remove pill shape for section titles like Intensity/Type */
+            font-size: 1.8em;
+            margin-top: 30px;
+            font-weight: 700;
+        }
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #FFE4E1; /* MistyRose border */
+            border-radius: 10px;
+            background-color: rgba(255, 248, 248, 0.7); /* Very light pinkish transparent bg */
+        }
+        .form-section legend {
+            font-weight: 700; /* Use font weight instead of bold tag */
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #E58A99; /* Softer pink for legend */
+            padding: 0 5px; /* Add padding if border cuts through */
+        }
+        .checkbox-group label,
+        .radio-group label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            color: #666; /* Slightly darker grey for options */
+        }
+        .checkbox-group input[type="checkbox"],
+        .radio-group input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #FFA0A0; /* Change check/radio color */
+        }
+        button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #FFA0A0; /* Light Coral / Pinkish button */
+            color: white;
+            border: none;
+            border-radius: 8px; /* Consistent rounding */
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(255, 160, 160, 0.3);
+        }
+        button[type="submit"]:hover {
+            background-color: #FF8C8C; /* Darker shade on hover */
+        }
+         button[type="submit"]:active {
+             transform: scale(0.98); /* Slight press effect */
+         }
+        #workout-plan {
+            margin-top: 30px;
+        }
+        .workout-section {
+             /* Slightly different background for generated sections */
+            background-color: rgba(255, 253, 253, 0.9);
+            border: 1px solid #FFF0F1; /* Very light pink border */
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+         .workout-section h3 {
+            margin-top: 0;
+            color: #E58A99; /* Consistent softer pink */
+            border-bottom: 1px solid #FFE_AE_1; /* Lighter, softer border */
+            padding-bottom: 8px;
+            font-size: 1.6em; /* Slightly larger */
+            font-weight: 700;
+            text-align: center; /* Center section titles */
+            margin-bottom: 20px;
+        }
+        .exercise {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 4px solid #FFB6C1; /* LightPink border */
+            background-color: #fff; /* White background for each exercise card */
+            border-radius: 0 8px 8px 0; /* Round corners opposite the border */
+             box-shadow: 0 2px 4px rgba(200, 180, 180, 0.1); /* Very subtle shadow */
+        }
+        .exercise strong {
+            font-size: 1.2em; /* Larger exercise name */
+            color: #D16080; /* Darker pink for emphasis */
+            display: block; /* Make it block for spacing */
+            margin-bottom: 5px;
+        }
+        .exercise p { /* Sets/Reps/Duration */
+            margin: 5px 0;
+            font-size: 1em;
+            color: #777;
+            font-weight: 700;
+        }
+        .exercise ul { /* How-to instructions */
+            list-style-type: none; /* Remove default bullets */
+            margin: 10px 0 0 0;
+            padding-left: 0;
+            font-size: 0.95em;
+            color: #666;
+        }
+        .exercise ul li {
+             margin-bottom: 5px;
+             position: relative;
+             padding-left: 18px; /* Space for custom bullet */
+        }
+         /* Custom bullet point */
+        .exercise ul li::before {
+            content: '🌸'; /* Pink flower or use '•' or other unicode */
+            position: absolute;
+            left: 0;
+            top: 0px;
+            color: #FFC0CB; /* LightPink */
+            font-size: 0.8em;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            /* Soft gradient line */
+            background-image: linear-gradient(to right, rgba(255, 182, 193, 0), rgba(255, 182, 193, 0.5), rgba(255, 182, 193, 0));
+            margin: 40px 0;
+        }
+
+        /* Style placeholder text */
+        #workout-plan:empty::before {
+            content: "Choose your workout focus and intensity, then click Generate to reveal your personalized plan! ✨";
+            display: block;
+            text-align: center;
+            font-style: italic;
+            color: #BMA0A8; /* Muted Pink */
+            padding: 30px;
+            border: 1px dashed #F0D0D5; /* Soft dashed border */
+            border-radius: 10px;
+            background-color: rgba(255, 245, 245, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Workout Curator</h1>
+        <p style="text-align: center; margin-bottom: 30px; color: #888;">Design your perfect at-home workout using just dumbbells and a yoga mat. Select your focus and desired challenge level below.</p>
+
+        <form id="workout-form">
+            <fieldset class="form-section checkbox-group">
+                <legend>Focus Areas</legend>
+                <label><input type="checkbox" name="workoutType" value="arms"> Arms (Biceps/Triceps)</label>
+                <label><input type="checkbox" name="workoutType" value="legs"> Legs (Quads/Hamstrings/Calves)</label>
+                <label><input type="checkbox" name="workoutType" value="core"> Core (Abs/Obliques)</label>
+                <label><input type="checkbox" name="workoutType" value="glutes"> Glutes</label>
+                <label><input type="checkbox" name="workoutType" value="shoulders"> Shoulders & Back</label> <!-- Combined Shoulders/Back for better exercise distribution -->
+                <label><input type="checkbox" name="workoutType" value="full_body"> Full Body</label>
+                <label><input type="checkbox" name="workoutType" value="yoga"> Yoga / Flexibility</label>
+            </fieldset>
+
+            <fieldset class="form-section radio-group">
+                <legend>Intensity Level</legend>
+                <label><input type="radio" name="intensity" value="beginner" checked> Beginner (Getting Started)</label>
+                <label><input type="radio" name="intensity" value="intermediate"> Intermediate (Feeling Stronger)</label>
+                <label><input type="radio" name="intensity" value="advanced"> Advanced (Ready for a Challenge)</label>
+            </fieldset>
+
+            <button type="submit">Generate Workout Plan</button>
+        </form>
+
+        <hr>
+
+        <div id="workout-plan">
+            <!-- Generated workout will appear here -->
+        </div>
+    </div>
+
+    <script>
+        // --- UPDATED Exercise Database (Inspired by NHS, M&S, PureGym, IntoWellness links) ---
+        const exercises = {
+            // --- WARM-UP (Kept from previous version - Generally applicable) ---
+            warmup: [
+                { name: "Jog in Place / High Knees", duration: "1 minute", instructions: ["Start with light jogging, gradually lifting knees higher.", "Keep core slightly engaged."] },
+                { name: "Arm Circles", duration: "1 minute (30s forward, 30s backward)", instructions: ["Stand tall, arms extended sideways.", "Make controlled circles, small then large, forward then backward."] },
+                { name: "Leg Swings (Forward & Lateral)", duration: "1 minute (30s each leg/direction)", instructions: ["Hold onto wall for balance if needed.", "Swing one leg forward and back smoothly, then side to side."] },
+                { name: "Torso Twists", duration: "1 minute", instructions: ["Stand with feet shoulder-width apart, knees slightly bent.", "Twist upper body gently side to side, allowing arms to swing loosely."] },
+                { name: "Cat-Cow Stretch", duration: "1 minute", instructions: ["Start on hands and knees.", "Inhale, drop belly, lift chest (Cow).", "Exhale, round spine, tuck chin (Cat)."] }
+            ],
+            // --- COOL-DOWN (Kept from previous version - Generally applicable) ---
+            cooldown: [
+                 { name: "Child's Pose", duration: "1 minute", instructions: ["Kneel on mat, big toes touching, sit back on heels.", "Fold forward, rest forehead on mat, arms extended or alongside body."] },
+                 { name: "Seated Forward Bend", duration: "1 minute", instructions: ["Sit with legs extended.", "Hinge at hips, fold forward gently over legs, keep spine long."] },
+                 { name: "Triceps Stretch", duration: "1 minute (30s each arm)", instructions: ["Reach one arm overhead, bend elbow, drop hand behind back.", "Use other hand to gently press down on elbow."] },
+                 { name: "Quad Stretch (Standing)", duration: "1 minute (30s each leg)", instructions: ["Stand, hold onto support if needed.", "Bend one knee, grab ankle, gently pull heel towards glute."] },
+                 { name: "Deep Breathing", duration: "1 minute", instructions: ["Sit or lie comfortably.", "Inhale slowly through nose, filling belly.", "Exhale slowly through mouth."] }
+            ],
+            // --- CORE WORKOUTS ---
+            core: {
+                beginner: [
+                    { name: "Plank (on Forearms or Hands)", sets: 3, reps: "Hold 20-30 seconds", instructions: ["Body straight line head to heels.", "Engage core, don't let hips sag.", "Keep neck neutral."] },
+                    { name: "Crunches", sets: 3, reps: 12-15, instructions: ["Lie on back, knees bent, feet flat.", "Support head lightly, lift shoulders using abs.", "Lower slowly."] },
+                    { name: "Bird Dog", sets: 3, reps: "10-12 each side", instructions: ["Start on hands and knees.", "Extend opposite arm and leg simultaneously, keeping back flat.", "Hold briefly, return, alternate."] }
+                ],
+                intermediate: [
+                    { name: "Plank with Alternating Leg Lifts", sets: 3, reps: "10-12 lifts total", instructions: ["Hold plank position.", "Slowly lift one leg straight up a few inches without shifting hips.", "Lower and alternate."] },
+                    { name: "Bicycle Crunches", sets: 3, reps: "20-30 total (10-15 each side)", instructions: ["Lie on back, hands behind head.", "Bring opposite elbow to opposite knee, twisting torso.", "Keep lower back pressed down."] },
+                    { name: "Russian Twists (Bodyweight or Light DB)", sets: 3, reps: "20-30 total (10-15 each side)", instructions: ["Sit leaning back, knees bent (feet on floor or lifted).", "Twist torso side to side, touching hands/DB near hips."] }
+                ],
+                advanced: [
+                    { name: "Side Plank with Hip Dip", sets: 3, reps: "10-12 each side", instructions: ["Start in side plank (forearm/feet).", "Lower hip towards floor slowly.", "Raise hip back up, engaging obliques."] },
+                    { name: "V-Ups", sets: 3, reps: 12-15, instructions: ["Lie flat, arms extended overhead.", "Simultaneously lift straight legs and torso, reaching hands towards feet.", "Lower with control."] },
+                    { name: "Hanging Knee Tucks (if bar avail.) / Reverse Crunches with Leg Extension", sets: 3, reps: 15, instructions: ["Reverse Crunch: Lie on back, knees bent.", "Lift hips, bringing knees to chest.", "Extend legs up/out at top (optional), lower slowly."] }
+                ]
+            },
+            // --- ARMS WORKOUTS (Biceps/Triceps) ---
+            arms: {
+                beginner: [
+                    { name: "Dumbbell Bicep Curls", sets: 3, reps: 10-12, instructions: ["Stand/sit tall, hold DBs palms forward.", "Curl DBs to shoulders, keeping elbows fixed.", "Lower slowly."] },
+                    { name: "Dumbbell Overhead Triceps Extension (One DB)", sets: 3, reps: 10-12, instructions: ["Hold one DB with both hands overhead.", "Lower DB behind head by bending elbows.", "Extend arms straight up, squeezing triceps."] },
+                    { name: "Bench Dips (or Chair Dips)", sets: 3, reps: 10-12, instructions: ["Sit edge of chair/bench, hands gripping edge.", "Slide hips forward, lower body by bending elbows.", "Push back up using triceps."] }
+                ],
+                intermediate: [
+                    { name: "Dumbbell Hammer Curls", sets: 3, reps: 12-15, instructions: ["Hold DBs with palms facing body.", "Curl weights up towards shoulders, keeping palms inward.", "Lower slowly."] },
+                    { name: "Dumbbell Triceps Kickbacks", sets: 3, reps: 12-15, instructions: ["Hinge at hips, back flat, one arm braced.", "Hold DB, upper arm parallel to floor.", "Extend forearm back, squeezing tricep."] },
+                    { name: "Close-Grip Push-ups (Knees or Toes)", sets: 3, reps: 10-15, instructions: ["Hands closer than shoulder-width.", "Lower chest, keeping elbows tucked near body.", "Push up, focusing on triceps."] }
+                ],
+                advanced: [
+                    { name: "Alternating Dumbbell Bicep Curls (with rotation)", sets: 3, reps: "10-12 each arm", instructions: ["Start with palms facing body.", "As you curl one arm, rotate palm to face shoulder.", "Reverse rotation on way down. Alternate arms."] },
+                    { name: "Skullcrushers (Lying DB Triceps Extension)", sets: 3, reps: 12-15, instructions: ["Lie on back, hold DBs over chest, palms facing each other.", "Bend elbows, lowering DBs towards sides of head.", "Extend arms back up."] },
+                    { name: "Diamond Push-ups", sets: 3, reps: "AMRAP (As Many Reps As Possible)", instructions: ["Hands close together forming diamond/triangle shape.", "Lower chest towards hands, elbows tucked.", "Push up forcefully."] }
+                ]
+            },
+            // --- LEGS WORKOUTS (Quads/Hamstrings/Calves) ---
+            legs: {
+                beginner: [
+                    { name: "Bodyweight Squats", sets: 3, reps: 12-15, instructions: ["Feet shoulder-width, chest up.", "Lower hips back/down like sitting in chair.", "Keep knees tracking over toes. Stand up."] },
+                    { name: "Static Lunges (Bodyweight)", sets: 3, reps: "10-12 each leg", instructions: ["Step one foot back into lunge stance.", "Lower straight down until both knees near 90 degrees.", "Push up through front foot. Complete reps, then switch."] },
+                    { name: "Calf Raises (Bodyweight)", sets: 3, reps: 15-20, instructions: ["Stand tall, feet hip-width.", "Rise onto balls of feet, lifting heels high.", "Lower slowly."] }
+                ],
+                intermediate: [
+                    { name: "Dumbbell Goblet Squats", sets: 3, reps: 12-15, instructions: ["Hold one DB vertically against chest.", "Squat deep, keeping chest up, elbows track inside knees.", "Stand driving through heels."] },
+                    { name: "Alternating Dumbbell Forward Lunges", sets: 3, reps: "10-12 each leg", instructions: ["Hold DBs at sides.", "Step forward, lower into lunge (both knees 90deg).", "Push off front foot to return. Alternate legs."] },
+                    { name: "Dumbbell Romanian Deadlifts (RDLs)", sets: 3, reps: 12-15, instructions: ["Hold DBs in front, slight knee bend.", "Hinge at hips, lowering DBs towards floor, back straight.", "Feel hamstring stretch. Return to standing, squeezing glutes."] }
+                ],
+                advanced: [
+                    { name: "Dumbbell Bulgarian Split Squats", sets: 3, reps: "10-12 each leg", instructions: ["Place rear foot on bench/chair, hold DBs.", "Lower front leg until thigh near parallel.", "Keep torso upright. Push up through front foot."] },
+                    { name: "Dumbbell Sumo Squats", sets: 3, reps: 12-15, instructions: ["Wide stance, toes pointed out slightly.", "Hold one heavy DB hanging down.", "Squat deep, keeping chest up, push knees out."] },
+                    { name: "Single-Leg Calf Raises (DB optional)", sets: 3, reps: "12-15 each leg", instructions: ["Stand on one leg (hold DB in same hand if using).", "Rise onto ball of foot.", "Lower slowly. Use support for balance if needed."] }
+                ]
+            },
+            // --- GLUTES WORKOUTS ---
+            glutes: { // Often worked with legs, but emphasis here
+                beginner: [
+                    { name: "Glute Bridges", sets: 3, reps: 15-20, instructions: ["Lie on back, knees bent, feet flat near hips.", "Lift hips high, squeezing glutes hard at top.", "Lower slowly."] },
+                    { name: "Donkey Kicks", sets: 3, reps: "15 each leg", instructions: ["Start on hands and knees.", "Keeping knee bent, lift one heel towards ceiling.", "Squeeze glute at top. Lower control."] },
+                    { name: "Fire Hydrants", sets: 3, reps: "15 each leg", instructions: ["Start on hands and knees.", "Keeping knee bent, lift leg out to side.", "Keep hips level. Lower control."] }
+                ],
+                intermediate: [
+                    { name: "Single-Leg Glute Bridges", sets: 3, reps: "12-15 each leg", instructions: ["Lie in bridge position, lift one leg straight or bent.", "Push through heel of grounded foot to lift hips.", "Squeeze glute."] },
+                    { name: "Dumbbell Glute Bridges", sets: 3, reps: 15-20, instructions: ["Place DB across hips.", "Perform glute bridge, pushing against DB weight.", "Focus on strong glute squeeze."] },
+                    { name: "Walking Lunges (DB optional)", sets: 3, reps: "20-24 steps total", instructions: ["Step forward into lunge.", "Push off back foot, bring it forward to step into next lunge.", "Hold DBs for added resistance."] }
+                ],
+                advanced: [
+                    { name: "Dumbbell Hip Thrusts (Upper back on bench/chair)", sets: 3, reps: 12-15, instructions: ["Sit with upper back against bench, feet flat.", "Place DB across hips.", "Drive hips up forcefully, full extension, squeeze glutes.", "Lower controlled."] },
+                    { name: "Reverse Lunges with DB", sets: 3, reps: "10-12 each leg", instructions: ["Hold DBs.", "Step backward into a lunge.", "Push off back foot to return to standing."] },
+                    { name: "Kettlebell Swings (Simulated with Dumbbell)", sets: 3, reps: 15-20, instructions: ["Hold one DB end with both hands.", "Hinge hips back, swing DB between legs.", "Thrust hips forward explosively to swing DB up to chest height."] }
+                ]
+            },
+            // --- SHOULDERS & BACK WORKOUTS --- (Combined for better at-home exercise distribution)
+            shoulders: {
+                beginner: [
+                    { name: "Dumbbell Shoulder Press (Seated/Standing)", sets: 3, reps: 10-12, instructions: ["Hold DBs at shoulders, palms forward.", "Press DBs straight overhead.", "Lower slowly."] },
+                    { name: "Dumbbell Lateral Raises", sets: 3, reps: 10-12, instructions: ["Stand, DBs at sides, slight elbow bend.", "Raise arms out to sides to shoulder height.", "Lower slowly, control the weight."] },
+                    { name: "Bent-Over Dumbbell Rows (Both Arms)", sets: 3, reps: 10-12, instructions: ["Hinge at hips, back flat, chest up.", "Let DBs hang down.", "Row DBs towards chest, squeezing shoulder blades.", "Lower slowly."] }
+                ],
+                intermediate: [
+                    { name: "Dumbbell Arnold Press", sets: 3, reps: 12-15, instructions: ["Start with DBs at shoulders, palms facing you.", "Press up, rotating palms forward.", "Reverse rotation on descent."] },
+                    { name: "Dumbbell Front Raises (Alternating)", sets: 3, reps: "10-12 each arm", instructions: ["Stand, hold DBs in front.", "Raise one arm straight forward to shoulder height.", "Lower slowly, alternate."] },
+                    { name: "Single-Arm Dumbbell Rows", sets: 3, reps: "10-12 each arm", instructions: ["Place one knee and hand on bench/chair, back flat.", "Let DB hang down.", "Row DB towards hip, squeezing back.", "Lower slowly."] }
+                ],
+                advanced: [
+                    { name: "Pike Push-ups", sets: 3, reps: 10-15, instructions: ["Start in downward dog (hips high).", "Lower head towards floor by bending elbows.", "Push back up, focusing on shoulders."] },
+                    { name: "Bent-Over Lateral Raises (Rear Delts)", sets: 3, reps: 12-15, instructions: ["Hinge deeply at hips, back flat.", "Let DBs hang, slight elbow bend.", "Raise arms out to sides ('flye' motion), squeezing rear delts."] },
+                    { name: "Renegade Rows", sets: 3, reps: "8-10 each arm", instructions: ["Start in high plank holding DBs.", "Keep hips stable, row one DB towards chest.", "Lower DB, alternate sides."] }
+                ]
+            },
+             // --- YOGA / FLEXIBILITY (Kept from previous version) ---
+             yoga: {
+                 beginner: [
+                    { name: "Sun Salutation A (Simplified)", sets: 3, reps: "Flow", instructions: ["Flow: Mountain > Forward Fold > Halfway Lift > Plank (knees down ok) > Cobra > Downward Dog.", "Hold Down Dog 5 breaths.", "Step forward > Halfway Lift > Forward Fold > Mountain."] },
+                    { name: "Warrior II", sets: 1, reps: "Hold 30s each side", instructions: ["Wide stance, front foot out, back foot in.", "Bend front knee over ankle, arms parallel to floor.", "Gaze forward."] },
+                    { name: "Triangle Pose", sets: 1, reps: "Hold 30s each side", instructions: ["From Warrior II, straighten front leg.", "Hinge at hip, reach front hand down, top arm up."] },
+                    { name: "Seated Forward Bend", sets: 1, reps: "Hold 1 minute", instructions: ["Sit legs extended.", "Hinge at hips, fold forward gently."] }
+                 ],
+                 intermediate: [
+                    { name: "Sun Salutation A (Full)", sets: 3-5, reps: "Flow", instructions: ["Flow: Mountain > Forward Fold > Halfway Lift > Plank > Chaturanga > Upward Dog > Downward Dog.", "Hold Down Dog 5 breaths.", "Step/jump forward > Halfway Lift > Forward Fold > Mountain."] },
+                    { name: "Extended Side Angle Pose", sets: 1, reps: "Hold 45s each side", instructions: ["From Warrior II, place forearm on thigh or hand down.", "Extend top arm overhead."] },
+                    { name: "Pigeon Pose Prep", sets: 1, reps: "Hold 1 min each side", instructions: ["Bring front knee behind wrist, shin angled.", "Extend back leg.", "Stay upright or fold forward."] },
+                    { name: "Revolved Chair Pose", sets: 1, reps: "Hold 30s each side", instructions: ["Start in Chair Pose (Utkatasana).", "Bring hands to prayer, twist, hook opposite elbow outside knee."] }
+                 ],
+                 advanced: [
+                    { name: "Crow Pose Practice", sets: 3, reps: "Hold 5+ breaths", instructions: ["Squat, hands shoulder-width.", "Knees on upper arms.", "Lean forward, lift feet."] },
+                    { name: "Wheel Pose Prep/Full", sets: 2, reps: "Hold 5-10 breaths", instructions: ["Lie on back, feet near hips, hands by ears.", "Press up into backbend."] },
+                    { name: "Standing Splits Prep", sets: 1, reps: "Hold 30-45s each side", instructions: ["From forward fold, lift one leg high behind you.", "Hands on floor/blocks, fold torso towards standing leg."] },
+                    { name: "Full Pigeon Pose / King Pigeon Prep", sets: 1, reps: "Hold 1 min each side", instructions: ["From Pigeon Prep, optionally bend back knee and reach back for foot (King Pigeon Prep)."] }
+                 ]
+             },
+            // --- FULL BODY (Logic remains the same - pulls from above categories) ---
+        };
+
+        // --- Event Listener for Form Submission (No changes needed here) ---
+        document.getElementById('workout-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent page reload
+
+            const selectedTypes = Array.from(document.querySelectorAll('input[name="workoutType"]:checked')).map(el => el.value);
+            const selectedIntensity = document.querySelector('input[name="intensity"]:checked').value;
+            const workoutPlanDiv = document.getElementById('workout-plan');
+
+            workoutPlanDiv.innerHTML = ''; // Clear previous workout
+
+            if (selectedTypes.length === 0) {
+                 // Use the placeholder style for error message
+                workoutPlanDiv.innerHTML = `<div style="color: #C71585; text-align: center; padding: 20px; border: 1px dashed #E57399; border-radius: 10px; background-color: rgba(255, 230, 230, 0.6);">Please select at least one focus area.</div>`;
+                return;
+            }
+
+            // --- Always Add Warm-up ---
+            workoutPlanDiv.appendChild(createWorkoutSection('Warm-up Routine (Approx. 5 min)', exercises.warmup, selectedIntensity, true)); // True indicates time-based
+
+            // --- Generate Main Workout Sections ---
+            let mainWorkoutExercises = [];
+            let sectionTitles = []; // Store titles to display
+
+             if (selectedTypes.includes('full_body')) {
+                 // If full body is selected, pick 1 exercise from legs, shoulders/back, core, glutes, arms
+                 // Adjusted to sample from the new combined 'shoulders' category
+                 const categoriesToSample = ['legs', 'shoulders', 'core', 'glutes', 'arms'];
+                 sectionTitles.push("Full Body Circuit");
+                 categoriesToSample.forEach(cat => {
+                    if (exercises[cat] && exercises[cat][selectedIntensity]) {
+                        const availableExercises = [...exercises[cat][selectedIntensity]]; // Copy array
+                        shuffleArray(availableExercises);
+                        mainWorkoutExercises.push(...availableExercises.slice(0, 1)); // Pick 1 from each group
+                    }
+                 });
+
+            } else {
+                // Generate sections for each selected type (excluding full_body if handled above)
+                 selectedTypes.forEach(type => {
+                    if (type !== 'full_body' && exercises[type] && exercises[type][selectedIntensity]) {
+                         const sectionExercises = [...exercises[type][selectedIntensity]]; // Copy array
+                         shuffleArray(sectionExercises); // Randomize exercises within the section
+                         // Limit number of exercises per section
+                         const exercisesToShow = sectionExercises.slice(0, type === 'yoga' ? 4 : 3); // Show 3-4 exercises per section
+                         mainWorkoutExercises.push(...exercisesToShow); // Add exercises to the main list
+                          // Create better titles based on checkbox labels
+                          let title = type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ');
+                          if (type === 'arms') title = 'Arms Focus (Biceps/Triceps)';
+                          if (type === 'legs') title = 'Legs Focus (Quads/Hams/Calves)';
+                          if (type === 'core') title = 'Core Focus (Abs/Obliques)';
+                          if (type === 'glutes') title = 'Glutes Focus';
+                          if (type === 'shoulders') title = 'Shoulders & Back Focus';
+                          if (type === 'yoga') title = 'Yoga / Flexibility';
+                         sectionTitles.push(title); // Add individual titles
+                    } else if (type !== 'full_body') {
+                        console.warn(`No exercises found for type: ${type}, intensity: ${selectedIntensity}`);
+                    }
+                });
+            }
+
+             // Create a single section for the main workout exercises
+            if (mainWorkoutExercises.length > 0) {
+                 // Join the collected titles or use a generic one if only one type was selected
+                 const mainWorkoutTitle = sectionTitles.join(' & ') || 'Your Workout';
+                 workoutPlanDiv.appendChild(createWorkoutSection(mainWorkoutTitle, mainWorkoutExercises, selectedIntensity, selectedTypes.includes('yoga') && sectionTitles.length === 1)); // isTimeBased only if pure Yoga
+            }
+
+
+            // --- Always Add Cool-down ---
+             workoutPlanDiv.appendChild(createWorkoutSection('Cool Down & Stretch (Approx. 5 min)', exercises.cooldown, selectedIntensity, true)); // True indicates time-based
+        });
+
+        // --- Helper Function to Create Workout Section HTML (No changes needed here) ---
+        function createWorkoutSection(title, exerciseList, intensity, isTimeBased = false) {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'workout-section';
+
+            const titleH3 = document.createElement('h3');
+            titleH3.textContent = title;
+            sectionDiv.appendChild(titleH3);
+
+            if (!exerciseList || exerciseList.length === 0) {
+                 const noExerciseP = document.createElement('p');
+                 noExerciseP.textContent = "No specific exercises generated for this part.";
+                 noExerciseP.style.textAlign = 'center';
+                 noExerciseP.style.fontStyle = 'italic';
+                 sectionDiv.appendChild(noExerciseP);
+                 return sectionDiv;
+            }
+
+            exerciseList.forEach(exercise => {
+                const exerciseDiv = document.createElement('div');
+                exerciseDiv.className = 'exercise';
+
+                const nameStrong = document.createElement('strong');
+                nameStrong.textContent = exercise.name;
+                exerciseDiv.appendChild(nameStrong);
+
+                const detailsP = document.createElement('p');
+                if (isTimeBased && exercise.duration) { // Check for duration property
+                    detailsP.textContent = `Duration: ${exercise.duration}`;
+                } else if (exercise.sets !== undefined && exercise.reps !== undefined) { // Check if sets/reps properties exist
+                     detailsP.textContent = `Sets: ${exercise.sets}, Reps: ${exercise.reps}`;
+                } else if (exercise.reps) { // Handle cases with only reps/duration (like Yoga holds sometimes)
+                      detailsP.textContent = `Reps/Hold: ${exercise.reps}`;
+                } else if (exercise.duration) { // Fallback for time-based without explicit flag
+                     detailsP.textContent = `Duration: ${exercise.duration}`;
+                }
+
+
+                exerciseDiv.appendChild(detailsP);
+
+                if (exercise.instructions && exercise.instructions.length > 0) {
+                    const instructionsUl = document.createElement('ul');
+                    exercise.instructions.forEach(point => {
+                        const li = document.createElement('li');
+                        li.textContent = point;
+                        instructionsUl.appendChild(li);
+                    });
+                    exerciseDiv.appendChild(instructionsUl);
+                }
+                sectionDiv.appendChild(exerciseDiv);
+            });
+
+            return sectionDiv;
+        }
+
+         // --- Helper Function to Shuffle Array (Fisher-Yates Algorithm) (No changes needed here) ---
+         function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+        }
+
+    </script>
+
+</body>
+</html>
